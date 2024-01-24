@@ -139,7 +139,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181"
       KAFKA_BROKER_ID: 1
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+      KAFKA_LOG4J_LOGGERS: "kafka.controller=ERROR,kafka.producer.async.DefaultEventHandler=ERROR,state.change.logger=ERROR"
     volumes:
       - kafka1:/var/lib/kafka/data
     depends_on:
@@ -158,7 +158,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181"
       KAFKA_BROKER_ID: 2
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+      KAFKA_LOG4J_LOGGERS: "kafka.controller=ERROR,kafka.producer.async.DefaultEventHandler=ERROR,state.change.logger=ERROR"
     volumes:
       - kafka2:/var/lib/kafka/data
     depends_on:
@@ -199,6 +199,25 @@ services:
       PGADMIN_DEFAULT_EMAIL: isidorapoznanovic1@gmail.com
       PGADMIN_DEFAULT_PASSWORD: password
 
+  metabase:
+    volumes:
+      - metabase-data:/metabase-data
+    environment:
+      - MB_DB_FILE=/metabase-data/metabase.db
+      - MB_DB_TYPE=postgres
+      - MB_DB_DBNAME=postgres
+      - MB_DB_PORT=5432
+      - MB_DB_USER=postgres
+      - MB_DB_PASS=postgres
+      - MB_DB_HOST=db
+      - PGDATA= /var/lib/postgresql/data/init/
+    ports:
+        - 3000:3000
+    image: metabase/metabase
+    restart: always
+    depends_on: 
+      - db
+
 volumes:
   namenode:
   datanode1:
@@ -208,3 +227,4 @@ volumes:
   kafka2:
   zoo1log:
   db-data:
+  metabase-data:

@@ -178,6 +178,20 @@ services:
     env_file:
       - ./hadoop.env
 
+  producer2:
+    build: ./producer2
+    container_name: kafka_producer_2
+    restart: unless-stopped
+    mem_limit: 200M
+    environment:
+      KAFKA_BROKER: "kafka2:19093"
+      KAFKA_TOPIC: "earthquakes-topic2"
+      DATASET_API_LINK: "https://earthquake.usgs.gov/fdsnws/"
+    depends_on:
+      - kafka2
+    env_file:
+      - ./hadoop.env
+
   db:
     image: postgres
     restart: always

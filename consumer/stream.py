@@ -1,7 +1,7 @@
 import os
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType, StructField, StringType, DoubleType, TimestampType
-from pyspark.sql.functions import col, from_json, window, avg, expr, count, from_unixtime
+from pyspark.sql.functions import col, from_json, window, avg, expr, count, from_unixtime, explode, split
 
 
 earthquakes = StructType([
@@ -98,6 +98,25 @@ if __name__ == '__main__':
             .option("subscribe", TOPIC) \
             .load()
 
+    df2 = spark \
+            .readStream \
+            .format("kafka") \
+            .option("kafka.bootstrap.servers", KAFKA_BROKER) \
+            .option("subscribe", TOPIC) \
+            .load().select(col("value").cast("string").alias("word"), col("timestamp"))
+
+    join_df = df.select(col("value").cast("string").alias("word"),
+    df.timestamp
+    )
+
+    joined_streams = join_df.join(df2, "word")
+
+    queryJ = joined_streams \
+    .writeStream \
+    .outputMode("append") \
+    .format("console") \
+    .option("truncate", "false") \
+    .start()
     
     query = df.select(col("value").cast("string"))\
     .writeStream\
